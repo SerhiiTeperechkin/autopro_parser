@@ -3,19 +3,28 @@ from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 import time
 
 
 def selenium_pars(part):
-    # part = 'GHP9510L0F'
-    # part1 = 'DK7991'
     url = 'https://avtopro.ua/'
+
+    # If needed, you can enable headless mode
+    """
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    driver = webdriver.Chrome(options=chrome_options)
+    """
+
     driver = webdriver.Chrome()
     wait = WebDriverWait(driver, 5)
     try:
         driver.get(url)
+        # You can change the waiting time depending on the power of your PC
         time.sleep(2)
         driver.find_element(By.CLASS_NAME, 'pro-input.pro-input--framed.ap-search__input').send_keys(part)
+        # You can change the waiting time depending on the power of your PC
         time.sleep(2)
         result = driver.find_elements(By.CSS_SELECTOR, "span[style='overflow: visible;']")
         if len(result) > 1:
@@ -37,12 +46,12 @@ def selenium_pars(part):
         else:
             driver.find_element(By.XPATH, '//*[@id="ap-search"]/div/div[2]/div/div[1]/div[3]/div/a[1]').click()
 
-        time.sleep(5)
+        # You can change the waiting time depending on the power of your PC
+        time.sleep(3)
         page = 0
 
         while True:
             try:
-
                 btn = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'show-more-btn__icon')))
                 driver.execute_script("arguments[0].scrollIntoView();", btn)
                 btn.click()
@@ -52,8 +61,8 @@ def selenium_pars(part):
             except NoSuchElementException:
                 break
 
-    except Exception as ex:
-        print(ex)
+    except Exception:
+        pass
 
     finally:
         current_url = driver.current_url
@@ -63,5 +72,3 @@ def selenium_pars(part):
             file.close()
         driver.quit()
     return current_url
-
-# print(selenium_pars('GHP9510L0F'))
